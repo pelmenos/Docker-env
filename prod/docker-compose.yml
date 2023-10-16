@@ -1,8 +1,9 @@
 version: "3"
 services:
   php:
-    build: .
-    command: "php ./index.php"
+    build: ./images/php
+    volumes:
+      - ./www:/var/www
     networks:
       - learn-docker-network
 
@@ -16,29 +17,23 @@ services:
     networks:
       - learn-docker-network
 
-  adminer:
-    image: adminer
-    restart: always
-    networks:
-      - learn-docker-network
-
   nginx:
     image: nginx:stable-alpine
     ports:
       - 80:80
     volumes:
+      - ./www:/var/www
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - php
       - db
-      - adminer
     networks:
       - learn-docker-network
 
 volumes:
   postgresdb_data:
 
+
 networks:
   learn-docker-network:
     driver: bridge
-
